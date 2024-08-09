@@ -12,7 +12,7 @@ extern "C" DLLEXPORT constinit auto SKSEPlugin_Version = []() {
 	v.PluginVersion(Version::MAJOR);
 	v.PluginName("loki_POISE");
 	v.AuthorName("LokiWasHere");
-	v.UsesAddressLibrary(true);
+	v.UsesAddressLibrary();
 	v.CompatibleVersions({ SKSE::RUNTIME_LATEST });
 
 	return v;
