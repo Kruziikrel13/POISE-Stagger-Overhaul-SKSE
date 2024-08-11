@@ -1,0 +1,1 @@
+Directory appended to CMAKE_PREFIX_PATH to resolve issues with FetchContent and CommonLibSSE being unable to find CMAKE configs for it's dependencies.

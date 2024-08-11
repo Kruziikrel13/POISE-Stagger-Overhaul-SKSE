@@ -1,4 +1,4 @@
-set(sources ${sources}
+set(SOURCES ${sources}
 	src/Loki_PluginTools.cpp
 	src/main.cpp
 	src/PCH.cpp

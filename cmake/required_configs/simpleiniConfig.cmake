@@ -1,0 +1,4 @@
+if (NOT SIMPLEINI_FOUND)
+  set(SIMPLEINI_INCLUDE_DIRS ${simpleini_SOURCE_DIR})
+  set(SIMPLEINI_LIBRARIES ${simpleini_BINARY_DIR})
+endif()
