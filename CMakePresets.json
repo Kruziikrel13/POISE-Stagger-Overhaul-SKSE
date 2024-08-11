@@ -1,74 +1,86 @@
 {
   "configurePresets": [
     {
-      "binaryDir": "${sourceDir}/build",
+      "name": "common",
+      "hidden": true,
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Release"
-        }
+        "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+        "ENABLE_SKYRIM_AE": "$penv{ENABLE_SKYRIM_AE}",
+        "MO2_MODS_DIR": "$penv{MO2_MODS_DIR}"
       },
       "errors": {
         "deprecated": true
       },
-      "hidden": true,
-      "name": "cmake-dev",
       "warnings": {
         "deprecated": true,
         "dev": true
       }
     },
     {
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": {
-          "type": "STRING",
-          "value": "$env{VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
-        }
-      },
+      "name": "visual-studio-2022",
       "hidden": true,
-      "name": "vcpkg"
+      "inherits": [ "common" ],
+      "architecture": { "value": "x64", "strategy": "set" },
+      "generator": "Visual Studio 17 2022",
+      "toolset": "v143",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>",
+        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /WX /external:anglebrackets /external:W0"
+      }
     },
     {
-      "cacheVariables": {
-        "CMAKE_MSVC_RUNTIME_LIBRARY": {
-          "type": "STRING",
-          "value": "MultiThreaded$<$<CONFIG:Debug>:Debug>"
-        },
-        "VCPKG_TARGET_TRIPLET": {
-          "type": "STRING",
-          "value": "x64-windows-static"
-        }
-      },
+      "name": "NMake",
       "hidden": true,
-      "name": "windows"
+      "inherits": [ "common" ],
+      "generator": "NMake Makefiles",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
     },
     {
+      "name": "release",
+      "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /WX $penv{CXXFLAGS}"
-      },
-      "generator": "Visual Studio 17 2022",
-      "inherits": [
-        "cmake-dev",
-        "vcpkg",
-        "windows"
-      ],
-      "name": "vs2022-windows-vcpkg-se",
-      "toolset": "v143"
+        "CMAKE_BUILD_TYPE": "Release"
+      }
     },
     {
-      "binaryDir": "${sourceDir}/buildae",
+      "name": "debug",
+      "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /WX $penv{CXXFLAGS}",
-        "BUILD_SKYRIMAE": true
-      },
-      "generator": "Visual Studio 17 2022",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "Release-MSVC",
       "inherits": [
-        "cmake-dev",
-        "vcpkg",
-        "windows"
+        "release",
+        "visual-studio-2022"
       ],
-      "name": "vs2022-windows-vcpkg-ae",
-      "toolset": "v143"
+      "description": "Optimized release build",
+      "binaryDir": "${sourceDir}/build/release",
+      "installDir": "${sourceDir}/install/release"
+    },
+    {
+      "name": "Debug-MSVC",
+      "inherits": [
+        "debug",
+        "visual-studio-2022"
+      ],
+      "description": "Debug build for testing",
+      "binaryDir": "${sourceDir}/build/debug",
+      "installDir": "${sourceDir}/install/debug"
+    },
+    {
+      "name": "compiledb",
+      "inherits": [
+        "debug",
+        "NMake"
+      ],
+      "description": "Generate compiledb for dev work",
+      "binaryDir": "${sourceDir}/build/compiledb"
     }
   ],
   "version": 3
